@@ -11,7 +11,7 @@ before_script:
   - export DEPLOY_USER=ubuntu
   - export DEPLOY_PASS=Hr092480123
   - touch ss.txt
-  - sshpass -e scp ss.txt $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+  - sshpass -e scp -o stricthostkeychecking=no ss.txt $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 jdk:
   - oraclejdk8
 after_success:
