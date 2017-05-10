@@ -23,16 +23,15 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<!--数据库迁移所用的参数 -->
-		<!-- Tencent cloud
+		<db.schema>qzy_task_manager</db.schema>
 		<db.url>jdbc:mysql://591145eb488e5.gz.cdb.myqcloud.com:4513/qzy_task_manager?useSSL=false&amp;useServerPrepStmts=true&amp;cachePrepStmts=true&amp;prepStmtCacheSize=25&amp;prepStmtCacheSqlLimit=256&amp;nullNamePatternMatchesAll=true</db.url>
 		<db.username>cdb_outerroot</db.username>
 		<db.password><![CDATA[dkmepNSo)W@9_=]]></db.password>
-		-->
 		<!--local
 		<db.url>jdbc:mysql://localhost:3306/qzy_task_manager?useSSL=false&amp;useServerPrepStmts=true&amp;cachePrepStmts=true&amp;prepStmtCacheSize=25&amp;prepStmtCacheSqlLimit=256&amp;nullNamePatternMatchesAll=true</db.url>
 		<db.username>root</db.username>
 		<db.password/>
-		<db.schema>qzy_task_manager</db.schema>
+
 		-->
 	</properties>
 

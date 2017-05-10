@@ -4,7 +4,6 @@ import com.qingzhenyun.entity.ServerInfo;
 import com.qingzhenyun.exception.ApiException;
 import com.qingzhenyun.jooq.common.generated.tables.pojos.OnlineServer;
 import com.qingzhenyun.jooq.common.generated.tables.records.OnlineServerRecord;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
