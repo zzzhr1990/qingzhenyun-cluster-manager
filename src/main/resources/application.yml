@@ -1,0 +1,23 @@
+# MySQL
+spring:
+  datasource:
+    hikari:
+      driver-class-name: "com.mysql.cj.jdbc.Driver"
+      auto-commit: true
+      connection-timeout: 2000
+      idle-timeout: 2000
+      maximum-pool-size: 255
+      minimum-idle: 5
+      max-lifetime: "1000000"
+    type: "com.zaxxer.hikari.HikariDataSource"
+#    url: "jdbc:mysql://localhost:3306/qzy_task_manager?useSSL=false&useServerPrepStmts=true&cachePrepStmts=true&prepStmtCacheSize=25&prepStmtCacheSqlLimit=256&nullNamePatternMatchesAll=true"
+    url: "jdbc:mysql://10.66.236.132:3306/qzy_task_manager?useSSL=false&useServerPrepStmts=true&cachePrepStmts=true&prepStmtCacheSize=25&prepStmtCacheSqlLimit=256&nullNamePatternMatchesAll=true"
+    username: "root"
+    password: "y9e39*@)UJ=1"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: "root"
+#    password: ""
+  jooq:
+      sql-dialect: mysql
+#    password: "dkmepNSo)W@9_="
+#    username: "cdb_outerroot"
