@@ -1,6 +1,6 @@
 language: java
 sudo: false
-script: mvn io.takari:maven:wrapper
+script: mvn -N io.takari:maven:wrapper
 jdk:
   - oraclejdk8
 before_install:
