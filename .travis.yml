@@ -1,13 +1,20 @@
 language: java
-sudo: false
+sudo: required
 script: mvn package
+addons:
+    apt:
+        packages:
+            - sshpass
 before_script:
-  - apt-get install sshpass
+  - export DEPLOY_HOST=119.29.174.171
+  - export DEPLOY_PATH=/opt/cluster_manager
+  - export DEPLOY_USER=ubuntu
+  - export DEPLOY_PASS=Hr092480123
+  - touch ss.txt
+  - sshpass -e scp ss.txt $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 jdk:
   - oraclejdk8
 after_success:
-  - sshpass -p "Hr092480123"
-  - ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ubuntu@119.29.174.171 rm -rf qingzhenyun-cluster-manager-0.0.1-SNAPSHOT.jar
-  - ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ubuntu@119.29.174.171 touch cctv.txt
-  - scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./build/zzzhr1990/qingzhenyun-cluster-manager/target/qingzhenyun-cluster-manager-0.0.1-SNAPSHOT.jar ubuntu@119.29.174.171:/home
+  - ls
+
 
