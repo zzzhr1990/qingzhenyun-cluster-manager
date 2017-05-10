@@ -1,8 +1,8 @@
 language: java
 sudo: false
 script: mvn package
-before:
-  - apt-get install sshpass
+before_script:
+  - sudo apt-get install sshpass
 jdk:
   - oraclejdk8
 after_success:
