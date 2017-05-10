@@ -1,6 +1,6 @@
 language: java
 sudo: false
-script: mvn -N io.takari:maven:wrapper
+install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 jdk:
   - oraclejdk8
 before_install:
