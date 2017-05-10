@@ -1,17 +1,12 @@
 language: java
-sudo: required
+sudo: false
 script: mvn package
 addons:
     apt:
         packages:
             - sshpass
 before_script:
-  - export DEPLOY_HOST=119.29.174.171
-  - export DEPLOY_PATH=/opt/cluster_manager
-  - export DEPLOY_USER=ubuntu
-  - export SSHPASS=Hr092480123
-  - touch ss.txt
-  - sshpass -e scp -o stricthostkeychecking=no ss.txt $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+  - date
 jdk:
   - oraclejdk8
 after_success:
