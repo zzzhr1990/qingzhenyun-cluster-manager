@@ -4,6 +4,6 @@ script: mvn package
 jdk:
   - oraclejdk8
 after_success:
-  - ssh ubuntu:Hr092480123@119.29.174.171 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no rm -rf qingzhenyun-cluster-manager-0.0.1-SNAPSHOT.jar
+  - ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ubuntu:Hr092480123@119.29.174.171 rm -rf qingzhenyun-cluster-manager-0.0.1-SNAPSHOT.jar
   - scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./build/zzzhr1990/qingzhenyun-cluster-manager/target/qingzhenyun-cluster-manager-0.0.1-SNAPSHOT.jar ubuntu:Hr092480123@119.29.174.171:/home
 
