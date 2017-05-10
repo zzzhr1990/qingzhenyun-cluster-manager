@@ -9,7 +9,7 @@ before_script:
   - export DEPLOY_HOST=119.29.174.171
   - export DEPLOY_PATH=/opt/cluster_manager
   - export DEPLOY_USER=ubuntu
-  - export DEPLOY_PASS=Hr092480123
+  - export SSHPASS=Hr092480123
   - touch ss.txt
   - sshpass -e scp -o stricthostkeychecking=no ss.txt $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 jdk:
