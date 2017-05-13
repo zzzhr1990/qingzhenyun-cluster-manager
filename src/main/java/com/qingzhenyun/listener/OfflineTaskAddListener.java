@@ -12,6 +12,8 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 /**
  * AddLi
  * Created by guna on 2017/5/13.
@@ -22,7 +24,7 @@ public class OfflineTaskAddListener {
     @RabbitListener(bindings = @QueueBinding(value = @Queue,
             key = MqConst.OFFLINE_ADD_ROUTING_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
-    public void onOfflineTaskAdded(JsonNode jsonNode) {
+    public void onOfflineTaskAdded(HashMap<String, String> jsonNode) {
         log.info("Recv {}", toJsonString(jsonNode));
     }
 
