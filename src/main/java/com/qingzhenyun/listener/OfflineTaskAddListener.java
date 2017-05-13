@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class OfflineTaskAddListener {
     @RabbitListener(bindings = @QueueBinding(value = @Queue,
             key = MqConst.OFFLINE_ADD_ROUTING_KEY,
-            exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "true")))
+            exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflineTaskAdded(HashMap<String, String> jsonNode) {
         log.info("Recv {}", toJsonString(jsonNode));
     }
