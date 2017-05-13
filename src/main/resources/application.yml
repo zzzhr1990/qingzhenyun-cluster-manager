@@ -17,6 +17,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: "root"
 #    password: ""
+  rabbitmq:
+      host: "123.59.101.219"
+      port: 5672
+      password: "dpngMibiZtRWzi7ImCsTzXxCHLyt159"
+      username: "java"
   jooq:
       sql-dialect: mysql
 #    password: "dkmepNSo)W@9_="

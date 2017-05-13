@@ -27,6 +27,12 @@ public class ServerController {
         return serverService.register(serverInfo);
     }
 
+    @RequestMapping(value = "/shutdown", method = RequestMethod.POST)
+    public boolean shutdown(@RequestBody ServerInfo serverInfo, HttpServletRequest req) {
+        serverInfo.setIp(req.getRemoteAddr());
+        return serverService.shutdown(serverInfo);
+    }
+
     @Autowired
     public void setServerService(ServerService serverService) {
         this.serverService = serverService;

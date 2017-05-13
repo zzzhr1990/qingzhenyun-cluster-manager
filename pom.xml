@@ -111,6 +111,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 			<plugin>
 				<!-- Specify the maven code generator plugin -->
@@ -160,6 +163,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 </project>

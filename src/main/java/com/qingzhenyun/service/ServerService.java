@@ -32,7 +32,8 @@ public class ServerService extends BaseDslService {
         configServer(serverInfo, onlineServerRecord);
         onlineServerRecord.store();
 
-        log.info("{} server registered.");
+        log.info("{} server[{}] ({}) registered.", sid, serverInfo.getIp()
+                , serverInfo.getName());
         /*
         Optional<OnlineServer> onlineServer = this.dslContext.selectOne()
                 .from(ONLINE_SERVER).where(ONLINE_SERVER.SID.eq(sid))
@@ -50,6 +51,23 @@ public class ServerService extends BaseDslService {
         }
         */
         return onlineServerRecord.into(OnlineServer.class);
+    }
+
+    public boolean shutdown(ServerInfo serverInfo) {
+        String sid = serverInfo.getSid();
+        if (StringUtils.isEmpty(sid)) {
+            throw new ApiException("SID_MUST_NOT_BE_NULL_OR_EMPTY");
+        }
+        OnlineServerRecord onlineServerRecord = dslContext.fetchOne(ONLINE_SERVER, ONLINE_SERVER.SID.eq(sid));
+        if (onlineServerRecord == null) {
+            log.info("{} server[{}] ({}) shutdown failed, no sid found.", serverInfo.getSid(), serverInfo.getIp()
+                    , serverInfo.getName());
+            return false;
+        }
+        onlineServerRecord.delete();
+        log.info("{} server[{}] ({}) shutdown.", serverInfo.getSid(), serverInfo.getIp()
+                , serverInfo.getName());
+        return true;
     }
 
     private void configServer(ServerInfo serverInfo, OnlineServerRecord onlineServer) {
