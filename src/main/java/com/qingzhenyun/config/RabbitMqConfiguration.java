@@ -2,6 +2,8 @@ package com.qingzhenyun.config;
 
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
 /**
+ * Conf
  * Created by guna on 2017/5/13.
  */
 @Configuration
@@ -29,5 +32,13 @@ public class RabbitMqConfiguration implements RabbitListenerConfigurer {
     @Override
     public void configureRabbitListeners(final RabbitListenerEndpointRegistrar registrar) {
         registrar.setMessageHandlerMethodFactory(messageHandlerMethodFactory());
+    }
+
+    @Bean
+    public RabbitMessagingTemplate rabbitMessagingTemplate(RabbitTemplate rabbitTemplate) {
+        RabbitMessagingTemplate rabbitMessagingTemplate = new RabbitMessagingTemplate();
+        rabbitMessagingTemplate.setMessageConverter(consumerJackson2MessageConverter());
+        rabbitMessagingTemplate.setRabbitTemplate(rabbitTemplate);
+        return rabbitMessagingTemplate;
     }
 }
