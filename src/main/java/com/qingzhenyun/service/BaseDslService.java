@@ -14,5 +14,5 @@ public abstract class BaseDslService {
         this.dslContext = dslContext;
     }
 
-    public DSLContext dslContext;
+    protected DSLContext dslContext;
 }

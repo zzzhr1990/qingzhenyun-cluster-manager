@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingzhenyun.constans.MqConst;
+import com.qingzhenyun.service.TorrentPreProcessService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -25,9 +26,16 @@ public class OfflineTaskAddListener {
             key = MqConst.OFFLINE_ADD_ROUTING_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflineTaskAdded(HashMap<String, String> jsonNode) {
+        torrentPreProcessService.onTorrentFileAdded(jsonNode);
         log.info("Recv {}", toJsonString(jsonNode));
     }
 
+    @Autowired
+    public void setTorrentPreProcessService(TorrentPreProcessService torrentPreProcessService) {
+        this.torrentPreProcessService = torrentPreProcessService;
+    }
+
+    private TorrentPreProcessService torrentPreProcessService;
     @Autowired
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
