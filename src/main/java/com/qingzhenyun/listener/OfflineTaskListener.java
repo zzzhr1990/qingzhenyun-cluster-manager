@@ -39,7 +39,7 @@ public class OfflineTaskListener {
         if (success) {
 
         }
-        //log.info("PreProcess {}", toJsonString(jsonNode));
+        log.info("PreProcess {}", toJsonString(jsonNode));
     }
 
     @Autowired
