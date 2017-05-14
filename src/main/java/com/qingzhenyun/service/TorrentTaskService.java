@@ -16,15 +16,17 @@ public class TorrentTaskService extends BaseDslService {
     public void addNewTask(String infoHash, String sid, Integer percent, String taskName
             , Integer type, Integer remoteType, String bucket, String key, String url) {
         //Find if need new task
+        long t = System.currentTimeMillis();
         WorkingTaskRecord workingTaskRecord = dslContext.fetchOne(Tables.WORKING_TASK, Tables.WORKING_TASK.INFO_HASH.eq(infoHash));
         if (workingTaskRecord != null) {
+            workingTaskRecord.setSid(sid);
             log.info("Need to check working task");
+            workingTaskRecord.setRefreshTime(t);
+            workingTaskRecord.setPercent(percent);
             return;
         }
         workingTaskRecord = dslContext.newRecord(Tables.WORKING_TASK);
-        long t = System.currentTimeMillis();
         workingTaskRecord.setInfoHash(infoHash);
-        workingTaskRecord.setSid(sid);
         workingTaskRecord.setStatus(TorrentConst.STATUS_START_DOWNLOAD);
         workingTaskRecord.setAddTime(t);
         workingTaskRecord.setRefreshTime(t);
