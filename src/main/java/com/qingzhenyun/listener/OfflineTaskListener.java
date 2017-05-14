@@ -34,7 +34,7 @@ public class OfflineTaskListener {
             key = MqConst.OFFLINE_TORRENT_PRE_PARSED_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflinePreParsed(JsonNode jsonNode) {
-        log.info("PreProcess");
+        log.info("PreProcess {}", toJsonString(jsonNode));
     }
 
     @Autowired
