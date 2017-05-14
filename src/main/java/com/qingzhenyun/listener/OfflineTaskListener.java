@@ -37,13 +37,13 @@ public class OfflineTaskListener {
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflinePreParsed(JsonNode jsonNode) {
         boolean success = jsonNode.get("success").asBoolean();
-        String sid = jsonNode.get("sid").asText();
         String urlHash = jsonNode.get("hash").asText();
         JsonNode info = jsonNode.get("info");
         String type = info.get("type").asText();
         String bucket = type.equals("torrent") ? info.get("bucket").asText() : null;
         String key = type.equals("torrent") ? info.get("key").asText() : null;
         String url = info.get("url").asText();
+        String sid = info.get("sid").asText();
         Integer ct = 0;
         if (type.equals("torrent")) {
             ct = 1;
