@@ -55,11 +55,15 @@ public class OfflineTaskListener {
             boolean c = torrentPreProcessService.onTorrentPreProcessSuccess(urlHash, infoHash, bucket, key, url);
             //TaskId is infohash
             if (!c) {
+                log.info("{} infoHash {} already exists", urlHash, infoHash);
                 return;
             }
             String taskName = data.get("name").asText();
             Double percent = data.get("progress").asDouble();
             torrentTaskService.addNewTask(infoHash, sid, (int) (Math.floor(percent)), taskName, 0, ct, bucket, key, url);
+            //Loop to add files..
+            //Check and update
+            torrentTaskService.parseAndRefreshFiles(infoHash, sid, 0, sid, 0, data.get("files"), data.get("file_priorities"), data.get("file_progress"));
 
         } else {
             torrentPreProcessService.onTorrentPreProcessFailed(urlHash, jsonNode.get("status").asInt());
