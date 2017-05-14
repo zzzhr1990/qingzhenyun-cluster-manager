@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -34,7 +35,17 @@ public class OfflineTaskListener {
             key = MqConst.OFFLINE_TORRENT_PRE_PARSED_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflinePreParsed(JsonNode jsonNode) {
-        log.info("PreProcess {}", toJsonString(jsonNode));
+        boolean success = jsonNode.get("success").asBoolean();
+        if (success) {
+            String text = jsonNode.get("data").asText();
+            try {
+                JsonNode node = objectMapper.readTree(text);
+                log.info(toJsonString(node));
+            } catch (IOException e) {
+                log.error("ex {}", e);
+            }
+        }
+        //log.info("PreProcess {}", toJsonString(jsonNode));
     }
 
     @Autowired
