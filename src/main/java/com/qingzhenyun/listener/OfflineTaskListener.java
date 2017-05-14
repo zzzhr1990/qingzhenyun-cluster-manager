@@ -64,7 +64,6 @@ public class OfflineTaskListener {
         } else {
             torrentPreProcessService.onTorrentPreProcessFailed(urlHash, jsonNode.get("status").asInt());
         }
-        log.info("PreProcess {}", toJsonString(jsonNode));
     }
 
     @Autowired
