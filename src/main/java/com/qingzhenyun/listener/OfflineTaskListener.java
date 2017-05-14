@@ -21,13 +21,20 @@ import java.util.HashMap;
  */
 @Service
 @Slf4j
-public class OfflineTaskAddListener {
+public class OfflineTaskListener {
     @RabbitListener(bindings = @QueueBinding(value = @Queue,
             key = MqConst.OFFLINE_ADD_ROUTING_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
-    public void onOfflineTaskAdded(HashMap<String, String> jsonNode) {
-        torrentPreProcessService.onTorrentFileAdded(jsonNode);
-        log.info("Recv {}", toJsonString(jsonNode));
+    public void onOfflineTaskAdded(HashMap<String, String> info) {
+        torrentPreProcessService.onTorrentFileAdded(info);
+        log.info("Recv {}", toJsonString(info));
+    }
+
+    @RabbitListener(bindings = @QueueBinding(value = @Queue,
+            key = MqConst.OFFLINE_TORRENT_PRE_PARSED_KEY,
+            exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
+    public void onOfflinePreParsed(JsonNode jsonNode) {
+        log.info("PreProcess");
     }
 
     @Autowired
