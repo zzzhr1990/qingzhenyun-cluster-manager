@@ -37,6 +37,7 @@ public class TorrentTaskService extends BaseDslService {
             workingTaskRecord.setSid(sid);
             workingTaskRecord.setRefreshTime(t);
             workingTaskRecord.setPercent(percent);
+            workingTaskRecord.store();
             return;
         }
         workingTaskRecord = dslContext.newRecord(Tables.WORKING_TASK);
