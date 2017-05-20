@@ -26,11 +26,11 @@ public class TestController {
     }
 
     @RequestMapping("/try")
-    public boolean tryj() {
+    public boolean tryj(String hash) {
 
-        torrentPreProcessService.getPreProcessExists("FqqOJo5Y9Aub6ZJGU022KZlzBRSl");
+        torrentPreProcessService.getPreProcessExists(hash);
         //return hash;
-        return true;
+        return torrentPreProcessService.getPreProcessExists(hash) == null;
     }
 
     @RequestMapping("/exists")
