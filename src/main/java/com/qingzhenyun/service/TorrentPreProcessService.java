@@ -62,6 +62,7 @@ public class TorrentPreProcessService extends BaseDslService {
     }
 
     public PreParseTorrentRecord getPreProcessExists(String fileHash) {
+        log.info("Checking file hash {}", fileHash);
         return dslContext.fetchOne(Tables.PRE_PARSE_TORRENT, Tables.PRE_PARSE_TORRENT.HASH.eq(fileHash));
     }
 
