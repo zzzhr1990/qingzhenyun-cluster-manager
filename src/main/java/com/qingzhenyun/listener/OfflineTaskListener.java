@@ -34,7 +34,8 @@ public class OfflineTaskListener {
     @RabbitListener(bindings = @QueueBinding(value = @Queue,
             key = MqConst.OFFLINE_TORRENT_PRE_PARSED_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
-    public void onOfflinePreParsed(JsonNode jsonNode) {
+    public void onOfflinePreParsed(JsonNode jsonNode) throws JsonProcessingException {
+        log.info("Recv {}", objectMapper.writeValueAsString(jsonNode));
         try {
             boolean success = jsonNode.get("success").asBoolean();
             String urlHash = jsonNode.get("hash").asText();
