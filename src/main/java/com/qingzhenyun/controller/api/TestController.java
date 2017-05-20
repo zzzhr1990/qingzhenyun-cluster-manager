@@ -1,6 +1,8 @@
 package com.qingzhenyun.controller.api;
 
 import com.qingzhenyun.exception.ApiException;
+import com.qingzhenyun.service.TorrentPreProcessService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,15 +23,19 @@ public class TestController {
         return hash;
     }
 
-    @RequestMapping("/hoho")
-    public HashMap<String, String> hoho() {
+    @RequestMapping("/try")
+    public boolean tryj() {
 
-        throw new ApiException("Oh!");
+        torrentPreProcessService.getPreProcessExists("FqqOJo5Y9Aub6ZJGU022KZlzBRSl");
         //return hash;
+        return true;
     }
 
     @RequestMapping("/oh")
     public ResponseEntity<String> oh() {
         return ResponseEntity.ok("OH");
     }
+
+    @Autowired
+    TorrentPreProcessService torrentPreProcessService;
 }
