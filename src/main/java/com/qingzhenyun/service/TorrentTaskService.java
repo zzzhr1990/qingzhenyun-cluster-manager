@@ -23,6 +23,10 @@ public class TorrentTaskService extends BaseDslService {
         WorkingTaskRecord workingTaskRecord = dslContext.fetchOne(Tables.WORKING_TASK, Tables.WORKING_TASK.INFO_HASH.eq(infoHash));
         if (workingTaskRecord != null) {
             String lastSid = workingTaskRecord.getSid();
+            if (lastSid == null) {
+                log.warn("Missing sid...");
+                lastSid = "Unknown";
+            }
             if (!lastSid.equals(sid)) {
                 log.info("Need to check working task {} and {} on [{}]", lastSid, sid, infoHash);
             }
@@ -32,6 +36,7 @@ public class TorrentTaskService extends BaseDslService {
             return;
         }
         workingTaskRecord = dslContext.newRecord(Tables.WORKING_TASK);
+        workingTaskRecord.setSid(sid);
         workingTaskRecord.setInfoHash(infoHash);
         workingTaskRecord.setStatus(TorrentConst.STATUS_START_DOWNLOAD);
         workingTaskRecord.setAddTime(t);
