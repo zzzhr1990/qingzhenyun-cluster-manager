@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qingzhenyun.constans.MqConst;
+import com.qingzhenyun.constans.TorrentConst;
 import com.qingzhenyun.service.TorrentPreProcessService;
 import com.qingzhenyun.service.TorrentTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -29,7 +29,6 @@ public class OfflineTaskListener {
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflineTaskAdded(HashMap<String, String> info) {
         torrentPreProcessService.onTorrentFileAdded(info);
-        log.info("Recv {}", toJsonString(info));
     }
 
     @RabbitListener(bindings = @QueueBinding(value = @Queue,
@@ -52,7 +51,8 @@ public class OfflineTaskListener {
         if (success) {
             JsonNode data = jsonNode.get("data");
             String infoHash = data.get("hash").asText();
-            boolean c = torrentPreProcessService.onTorrentPreProcessSuccess(urlHash, infoHash, bucket, key, url);
+            //Integer userId = data.get("userId").asInt();
+            boolean c = torrentPreProcessService.createPreProcess(urlHash, infoHash, bucket, key, url, TorrentConst.PRE_PROCESS_SUCCESS);
             //TaskId is infohash
             if (!c) {
                 log.info("{} infoHash {} already exists", urlHash, infoHash);

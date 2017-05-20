@@ -7,6 +7,7 @@ import com.qingzhenyun.jooq.common.generated.Tables;
 import com.qingzhenyun.jooq.common.generated.tables.pojos.PreParseTorrent;
 import com.qingzhenyun.jooq.common.generated.tables.records.PreParseTorrentRecord;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Result;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,30 +23,79 @@ import java.util.HashMap;
 public class TorrentPreProcessService extends BaseDslService {
     //public
     public void onTorrentFileAdded(HashMap<String, String> map) {
+        String fileHash = map.get("hash");
         //Find if exists..
-        //PreParseTorrentRecord rec = dslContext.fetchOne(Tables.PRE_PARSE_TORRENT, Tables.PRE_PARSE_TORRENT.HASH.eq(hash));
+        PreParseTorrentRecord rec = getPreProcessExists(fileHash);
+        if (rec != null) {
+            return;
+        }
+        String type = map.get("type");
+        // find if there is torrent already have info.
+
+        String bucket = map.get("bucket");
+        String infoHash = map.get("infoHash");
+        if (type.equals("magnet")) {
+            Result<PreParseTorrentRecord> fetch = dslContext.fetch(Tables.PRE_PARSE_TORRENT, Tables.PRE_PARSE_TORRENT.INFOHASH.eq(infoHash));
+            for (PreParseTorrentRecord torrentInfo : fetch) {
+                if (torrentInfo.getStoreKey() != null) {
+                    createPreProcess(fileHash, infoHash, torrentInfo.getStoreBucket(),
+                            torrentInfo.getStoreKey(), torrentInfo.getUrl(), torrentInfo.getStatus());
+                    return;
+                }
+            }
+        }
+        String key = map.get("key");
+        String url = map.get("url");
+        //Create F
+        createPreProcess(fileHash, infoHash, bucket, key, url, TorrentConst.PRETENDING_PROCESS_SUCCESS);
         rabbitMessagingTemplate.convertAndSend(MqConst.OFFLINE_EXCHANGE, MqConst.OFFLINE_ADD_TORRENT_TASK_KEY, map);
     }
 
-    public boolean onTorrentPreProcessSuccess(String fileHash, String infoHash, String bucket, String key, String url) {
+    public void onMagnetUrlAdded(HashMap<String, String> map) {
+        String fileHash = map.get("hash");
+        //Find if exists..
+        PreParseTorrentRecord rec = dslContext.fetchOne(Tables.PRE_PARSE_TORRENT, Tables.PRE_PARSE_TORRENT.HASH.eq(fileHash));
+        if (rec != null) {
+            return;
+        }
+        rabbitMessagingTemplate.convertAndSend(MqConst.OFFLINE_EXCHANGE, MqConst.OFFLINE_ADD_TORRENT_TASK_KEY, map);
+    }
+
+    public PreParseTorrentRecord getPreProcessExists(String fileHash) {
+        return dslContext.fetchOne(Tables.PRE_PARSE_TORRENT, Tables.PRE_PARSE_TORRENT.HASH.eq(fileHash));
+    }
+
+    public boolean createPreProcess(String fileHash, String infoHash, String bucket, String key, String url, Integer status) {
         //If not have, we should create new one
         boolean create = false;
-        PreParseTorrentRecord fetch = dslContext.fetchOne(Tables.PRE_PARSE_TORRENT, Tables.PRE_PARSE_TORRENT.HASH.eq(fileHash));
+        PreParseTorrentRecord fetch = getPreProcessExists(fileHash);
         if (fetch == null) {
             fetch = dslContext.newRecord(Tables.PRE_PARSE_TORRENT);
             fetch.setHash(fileHash);
             fetch.setStoreType(0);
-            fetch.setInfohash(infoHash);
-            fetch.setStoreBucket(bucket);
-            fetch.setStoreKey(key);
-            fetch.setUrl(url);
             create = true;
         }
-        fetch.setStatus(TorrentConst.PRE_PROCESS_SUCCESS);
+        if (infoHash != null) {
+            fetch.setInfohash(infoHash);
+        }
+        if (bucket != null) {
+            fetch.setStoreBucket(bucket);
+        }
+        if (key != null) {
+            fetch.setStoreKey(key);
+        }
+        if (url != null) {
+            fetch.setUrl(url);
+        }
+        Integer st = fetch.getStatus();
+        if (st < status) {
+            fetch.setStatus(status);
+        }
         fetch.setTryTime(System.currentTimeMillis());
         fetch.store();
         return create;
     }
+
 
     public void onTorrentPreProcessFailed(String fileHash, Integer status) {
         //If not have, we should create new one
