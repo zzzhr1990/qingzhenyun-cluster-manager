@@ -19,12 +19,16 @@ public class TorrentTaskService extends BaseDslService {
     public void addNewTask(String infoHash, String sid, Integer percent, String taskName
             , Integer type, Integer remoteType, String bucket, String key, String url) {
         //Find if need new task
+        if (sid == null) {
+            log.warn("Missing sid...= =");
+            sid = "Unknown";
+        }
         long t = System.currentTimeMillis();
         WorkingTaskRecord workingTaskRecord = dslContext.fetchOne(Tables.WORKING_TASK, Tables.WORKING_TASK.INFO_HASH.eq(infoHash));
         if (workingTaskRecord != null) {
             String lastSid = workingTaskRecord.getSid();
             if (lastSid == null) {
-                log.warn("Missing sid...");
+                log.warn("Missing sid...{}", sid);
                 lastSid = "Unknown";
             }
             if (!lastSid.equals(sid)) {
