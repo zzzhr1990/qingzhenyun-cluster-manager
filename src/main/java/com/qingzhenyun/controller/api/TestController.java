@@ -1,7 +1,9 @@
 package com.qingzhenyun.controller.api;
 
 import com.qingzhenyun.exception.ApiException;
+import com.qingzhenyun.jooq.common.generated.Tables;
 import com.qingzhenyun.service.TorrentPreProcessService;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,12 +33,9 @@ public class TestController {
         return true;
     }
 
-    @RequestMapping("/try2")
-    public boolean tryp(String hash) {
-
-        torrentPreProcessService.getPreProcessExists(hash);
-        //return hash;
-        return true;
+    @RequestMapping("/exists")
+    public boolean exists(Integer id) {
+        return dslContext.fetchOne(Tables.QZY_TEST_CASE, Tables.QZY_TEST_CASE.ID.eq(id)) == null;
     }
 
     @RequestMapping("/oh")
@@ -46,4 +45,11 @@ public class TestController {
 
     @Autowired
     TorrentPreProcessService torrentPreProcessService;
+
+    @Autowired
+    public void setDslContext(DSLContext dslContext) {
+        this.dslContext = dslContext;
+    }
+
+    protected DSLContext dslContext;
 }
