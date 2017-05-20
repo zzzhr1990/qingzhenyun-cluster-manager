@@ -73,6 +73,7 @@ public class TorrentPreProcessService extends BaseDslService {
             fetch = dslContext.newRecord(Tables.PRE_PARSE_TORRENT);
             fetch.setHash(fileHash);
             fetch.setStoreType(0);
+            fetch.setStatus(status);
             create = true;
         }
         if (infoHash != null) {
@@ -88,7 +89,7 @@ public class TorrentPreProcessService extends BaseDslService {
             fetch.setUrl(url);
         }
         Integer st = fetch.getStatus();
-        if (st < status) {
+        if (st == null || st < status) {
             fetch.setStatus(status);
         }
         fetch.setTryTime(System.currentTimeMillis());
