@@ -22,8 +22,11 @@ public class TorrentTaskService extends BaseDslService {
         long t = System.currentTimeMillis();
         WorkingTaskRecord workingTaskRecord = dslContext.fetchOne(Tables.WORKING_TASK, Tables.WORKING_TASK.INFO_HASH.eq(infoHash));
         if (workingTaskRecord != null) {
+            String lastSid = workingTaskRecord.getSid();
+            if (!lastSid.equals(sid)) {
+                log.info("Need to check working task {} and {} on [{}]", lastSid, sid, infoHash);
+            }
             workingTaskRecord.setSid(sid);
-            log.info("Need to check working task");
             workingTaskRecord.setRefreshTime(t);
             workingTaskRecord.setPercent(percent);
             return;

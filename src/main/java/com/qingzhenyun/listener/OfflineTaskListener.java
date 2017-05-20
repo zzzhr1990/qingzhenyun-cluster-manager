@@ -35,7 +35,6 @@ public class OfflineTaskListener {
             key = MqConst.OFFLINE_TORRENT_PRE_PARSED_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflinePreParsed(JsonNode jsonNode) throws JsonProcessingException {
-        log.info("Recv {}", objectMapper.writeValueAsString(jsonNode));
         try {
             boolean success = jsonNode.get("success").asBoolean();
             String urlHash = jsonNode.get("hash").asText();
@@ -58,12 +57,13 @@ public class OfflineTaskListener {
                 //TaskId is infohash
                 if (!c) {
                     log.info("{} infoHash {} already exists", urlHash, infoHash);
-                    return;
+                    //return;
                 }
                 String taskName = data.get("name").asText();
                 Double percent = data.get("progress").asDouble();
                 torrentTaskService.addNewTask(infoHash, sid, (int) (Math.floor(percent)), taskName, 0, ct, bucket, key, url);
                 //Loop to add files..
+                //TODO: check dump..
                 //Check and update
                 torrentTaskService.parseAndRefreshFiles(infoHash, sid, 0, sid, 0, data.get("files"), data.get("file_priorities"), data.get("file_progress"));
 
