@@ -31,6 +31,14 @@ public class TestController {
         return true;
     }
 
+    @RequestMapping("/try2")
+    public boolean tryp(String hash) {
+
+        torrentPreProcessService.getPreProcessExists(hash);
+        //return hash;
+        return true;
+    }
+
     @RequestMapping("/oh")
     public ResponseEntity<String> oh() {
         return ResponseEntity.ok("OH");
