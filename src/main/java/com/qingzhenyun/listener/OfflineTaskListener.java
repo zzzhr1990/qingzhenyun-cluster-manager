@@ -35,38 +35,42 @@ public class OfflineTaskListener {
             key = MqConst.OFFLINE_TORRENT_PRE_PARSED_KEY,
             exchange = @Exchange(value = MqConst.OFFLINE_EXCHANGE, type = "direct", durable = "true", autoDelete = "false")))
     public void onOfflinePreParsed(JsonNode jsonNode) {
-        boolean success = jsonNode.get("success").asBoolean();
-        String urlHash = jsonNode.get("hash").asText();
-        JsonNode info = jsonNode.get("info");
-        String type = info.get("type").asText();
-        String bucket = type.equals("torrent") ? info.get("bucket").asText() : null;
-        String key = type.equals("torrent") ? info.get("key").asText() : null;
-        String url = info.get("url").asText();
-        String sid = info.get("sid").asText();
-        Integer ct = 0;
-        if (type.equals("torrent")) {
-            ct = 1;
-        }
-
-        if (success) {
-            JsonNode data = jsonNode.get("data");
-            String infoHash = data.get("hash").asText();
-            //Integer userId = data.get("userId").asInt();
-            boolean c = torrentPreProcessService.createPreProcess(urlHash, infoHash, bucket, key, url, TorrentConst.PRE_PROCESS_SUCCESS);
-            //TaskId is infohash
-            if (!c) {
-                log.info("{} infoHash {} already exists", urlHash, infoHash);
-                return;
+        try {
+            boolean success = jsonNode.get("success").asBoolean();
+            String urlHash = jsonNode.get("hash").asText();
+            JsonNode info = jsonNode.get("info");
+            String type = info.get("type").asText();
+            String bucket = type.equals("torrent") ? info.get("bucket").asText() : null;
+            String key = type.equals("torrent") ? info.get("key").asText() : null;
+            String url = info.get("url").asText();
+            String sid = info.get("sid").asText();
+            Integer ct = 0;
+            if (type.equals("torrent")) {
+                ct = 1;
             }
-            String taskName = data.get("name").asText();
-            Double percent = data.get("progress").asDouble();
-            torrentTaskService.addNewTask(infoHash, sid, (int) (Math.floor(percent)), taskName, 0, ct, bucket, key, url);
-            //Loop to add files..
-            //Check and update
-            torrentTaskService.parseAndRefreshFiles(infoHash, sid, 0, sid, 0, data.get("files"), data.get("file_priorities"), data.get("file_progress"));
 
-        } else {
-            torrentPreProcessService.onTorrentPreProcessFailed(urlHash, jsonNode.get("status").asInt());
+            if (success) {
+                JsonNode data = jsonNode.get("data");
+                String infoHash = data.get("hash").asText();
+                //Integer userId = data.get("userId").asInt();
+                boolean c = torrentPreProcessService.createPreProcess(urlHash, infoHash, bucket, key, url, TorrentConst.PRE_PROCESS_SUCCESS);
+                //TaskId is infohash
+                if (!c) {
+                    log.info("{} infoHash {} already exists", urlHash, infoHash);
+                    return;
+                }
+                String taskName = data.get("name").asText();
+                Double percent = data.get("progress").asDouble();
+                torrentTaskService.addNewTask(infoHash, sid, (int) (Math.floor(percent)), taskName, 0, ct, bucket, key, url);
+                //Loop to add files..
+                //Check and update
+                torrentTaskService.parseAndRefreshFiles(infoHash, sid, 0, sid, 0, data.get("files"), data.get("file_priorities"), data.get("file_progress"));
+
+            } else {
+                torrentPreProcessService.onTorrentPreProcessFailed(urlHash, jsonNode.get("status").asInt());
+            }
+        } catch (Exception e) {
+            log.error("Exec listener ex", e);
         }
     }
 
